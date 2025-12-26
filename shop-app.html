@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Order from your trusted local shops - groceries, food, medicine, and more">
+    <title>Local Shop App - Order from Trusted Local Shops</title>
+    <link rel="stylesheet" href="../css/shop-app.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="nav-content">
+                <div class="nav-brand">
+                    <i class="fas fa-store"></i>
+                    <span>Local Shop</span>
+                </div>
+
+                <div class="nav-search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search shops or items..." id="searchInput">
+                </div>
+
+                <div class="nav-links">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#shops" class="nav-link">Shops</a>
+                    <a href="#orders" class="nav-link">Orders</a>
+                    <a href="#profile" class="nav-link">Profile</a>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="icon-btn" id="cartBtn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="badge" id="cartBadge">0</span>
+                    </button>
+                    <button class="icon-btn" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                    </button>
+                    <button class="btn-primary" id="loginBtn">Login</button>
+                </div>
+
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="mobile-menu-header">
+            <h3>Menu</h3>
+            <button class="close-btn" id="closeMobileMenu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="#home" class="mobile-link">Home</a>
+            <a href="#shops" class="mobile-link">Shops</a>
+            <a href="#orders" class="mobile-link">Orders</a>
+            <a href="#profile" class="mobile-link">Profile</a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero" id="home">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Order from Your Trusted <span class="gradient-text">Local Shops</span>
+                        </h1>
+                        <p class="hero-subtitle">Browse items, place orders, and get delivery from your favorite local
+                            shops - all without a single phone call</p>
+                        <div class="hero-actions">
+                            <button class="btn-primary btn-large" id="exploreBtn">
+                                <i class="fas fa-compass"></i>
+                                Explore Shops
+                            </button>
+                            <button class="btn-secondary btn-large">
+                                <i class="fas fa-play-circle"></i>
+                                How it Works
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-image">
+                        <div class="hero-card">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h4>Easy Ordering</h4>
+                            <p>Browse and order in minutes</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Location Section -->
+        <section class="location-section">
+            <div class="container">
+                <div class="location-card">
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <span class="location-label">Deliver to</span>
+                            <h4 class="location-address">Select delivery location</h4>
+                        </div>
+                    </div>
+                    <button class="btn-outline" id="changeLocationBtn">Change</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Categories Section -->
+        <section class="categories-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">📂 Browse by Category</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="categories-grid" id="categoriesGrid">
+                    <!-- Categories will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Favorite Shops Section -->
+        <section class="favorite-shops-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">⭐ Your Favorite Shops</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="shops-carousel" id="favoriteShops">
+                    <!-- Favorite shops will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Shops Section -->
+        <section class="shops-section" id="shops">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">🏪 Featured Shops</h2>
+                    <div class="filter-tabs">
+                        <button class="filter-tab active" data-filter="all">All</button>
+                        <button class="filter-tab" data-filter="grocery">Grocery</button>
+                        <button class="filter-tab" data-filter="food">Food</button>
+                        <button class="filter-tab" data-filter="medicine">Medicine</button>
+                    </div>
+                </div>
+                <div class="shops-grid" id="shopsGrid">
+                    <!-- Shops will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Orders Section -->
+        <section class="orders-section" id="orders">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">🕒 Recent Orders</h2>
+                    <a href="#" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="orders-list" id="ordersList">
+                    <!-- Orders will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works Section -->
+        <section class="how-it-works-section">
+            <div class="container">
+                <h2 class="section-title text-center">How It Works</h2>
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <i class="fas fa-search step-icon"></i>
+                        <h3>Browse Shops</h3>
+                        <p>Find your favorite local shops and browse their products</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <i class="fas fa-shopping-cart step-icon"></i>
+                        <h3>Add to Cart</h3>
+                        <p>Select items and add them to your cart</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <i class="fas fa-credit-card step-icon"></i>
+                        <h3>Place Order</h3>
+                        <p>Choose payment method and delivery option</p>
+                    </div>
+                    <div class="step-card">
+                        <div class="step-number">4</div>
+                        <i class="fas fa-truck step-icon"></i>
+                        <h3>Get Delivery</h3>
+                        <p>Track your order and receive it at your doorstep</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Local Shop App</h3>
+                    <p>Your trusted platform for ordering from local shops</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="#">Grocery</a></li>
+                        <li><a href="#">Food & Restaurants</a></li>
+                        <li><a href="#">Medicine</a></li>
+                        <li><a href="#">Home Services</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                        <li><a href="#">Refund Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Local Shop App. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-sidebar" id="cartSidebar">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <button class="close-btn" id="closeCart">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="cart-content" id="cartContent">
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+                <button class="btn-primary">Start Shopping</button>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Total:</span>
+                <span class="total-amount">₹0.00</span>
+            </div>
+            <button class="btn-primary btn-block" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Login to Continue</h3>
+                <button class="close-btn" id="closeLoginModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Phone Number</label>
+                        <div class="input-group">
+                            <span class="input-prefix">+91</span>
+                            <input type="tel" placeholder="Enter 10-digit phone number" maxlength="10" id="phoneInput"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary btn-block">Send OTP</button>
+                </form>
+                <p class="modal-footer-text">By continuing, you agree to our Terms of Service and Privacy Policy</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/shop-data.js"></script>
+    <script src="../js/shop-app.js"></script>
+</body>
+
+</html>

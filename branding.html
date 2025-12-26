@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Branding | Mohammed Faris</title>
+    <!-- Fonts - Matching Index Page -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+        :root {
+            --bg-color: #050505;
+            --surface-color: #0c0c0c;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --accent: #d32f2f;
+            --gold: #d4af37;
+            --border: rgba(255, 255, 255, 0.08);
+            --font-main: 'Manrope', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            /* Hide scrollbar for cleaner look */
+            scrollbar-width: none;
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Lenis Smooth Scroll */
+        html.lenis,
+        html.lenis body {
+            height: auto;
+        }
+
+        .lenis.lenis-smooth {
+            scroll-behavior: auto !important;
+        }
+
+        .lenis.lenis-smooth [data-lenis-prevent] {
+            overscroll-behavior: contain;
+        }
+
+        .lenis.lenis-stopped {
+            overflow: hidden;
+        }
+
+        /* Cinematic Background */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+            background: #050505;
+        }
+
+        .bg-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.3) contrast(1.05);
+            opacity: 0.3;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(5, 5, 5, 0.9), transparent 20%, transparent 80%, var(--bg-color));
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            mix-blend-mode: difference;
+        }
+
+        .back-link {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .back-link:hover {
+            transform: translateX(-5px);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 180px 40px 100px;
+            background: var(--bg-color);
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-intro {
+            text-align: center;
+            margin-bottom: 150px;
+            position: relative;
+        }
+
+        .page-intro h1 {
+            font-size: clamp(3rem, 7vw, 7rem);
+            font-weight: 300;
+            line-height: 1;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .page-intro h1 strong {
+            font-weight: 800;
+            color: #fff;
+        }
+
+        /* Sticky Project Layout */
+        .project-section {
+            display: grid;
+            grid-template-columns: 0.8fr 1.2fr;
+            gap: 100px;
+            margin-bottom: 300px;
+            position: relative;
+        }
+
+        .project-info {
+            position: sticky;
+            top: 150px;
+            height: fit-content;
+            padding-right: 40px;
+        }
+
+        .project-meta {
+            display: inline-block;
+            font-size: 0.85rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--gold);
+            padding-bottom: 5px;
+        }
+
+        .project-title {
+            font-family: var(--font-main);
+            font-weight: 800;
+            font-size: 5rem;
+            line-height: 1;
+            margin-bottom: 30px;
+            color: #fff;
+            letter-spacing: -2px;
+        }
+
+        .project-desc {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 450px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .stat-item h4 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .stat-item p {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Gallery Feed */
+        .project-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        /* Image Cards */
+        .page-item {
+            position: relative;
+            border-radius: 4px;
+            background: #ffffff;
+            transition: transform 0.1s ease-out, background-color 0.4s ease;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Brand-Specific Hover Colors */
+        #bizarch .page-item:hover {
+            background: #fffbf0;
+            /* Warm yellow tint for construction */
+        }
+
+        #ofsys .page-item:hover {
+            background: #f0f5ff;
+            /* Cool blue tint for tech */
+        }
+
+        #xconcept .page-item:hover {
+            background: #f5f5f8;
+            /* Sleek silver for automotive */
+        }
+
+        #kayakalpa .page-item:hover {
+            background: #f0f8f0;
+            /* Earthy green for wellness */
+        }
+
+        #brand-project .page-item:hover {
+            background: #f5f5f5;
+            /* Professional gray for corporate */
+        }
+
+        .page-item.landscape {
+            grid-column: span 2;
+        }
+
+        .page-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            image-rendering: -webkit-optimize-contrast;
+            color-interpolation-filters: sRGB;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            filter: contrast(1.1) saturate(1.1) brightness(0.98);
+        }
+
+        /* Shine Effect */
+        .page-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(105deg,
+                    transparent 20%,
+                    rgba(255, 255, 255, 0.1) 40%,
+                    transparent 60%);
+            transform: skewX(-20deg);
+            transition: left 0s;
+            pointer-events: none;
+        }
+
+        .page-item:hover::after {
+            left: 150%;
+            transition: left 0.8s ease-in-out;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 50px 0;
+            border-top: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 1024px) {
+            .project-section {
+                grid-template-columns: 1fr;
+                gap: 50px;
+                margin-bottom: 150px;
+            }
+
+            .project-info {
+                position: relative;
+                top: 0;
+                padding-right: 0;
+                margin-bottom: 20px;
+            }
+
+            .project-title {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Dynamic Background -->
+    <!-- Canvas inserted automatically by background.js -->
+
+    <nav>
+        <a href="index.html" class="back-link">
+            <i data-feather="arrow-left"></i> Main Portfolio
+        </a>
+    </nav>
+
+    <div class="container">
+        <header class="page-intro">
+            <h1 data-aos="fade-up">Visual <strong>Identity</strong></h1>
+            <!-- <p>Strategic design systems built for scalability.</p> -->
+        </header>
+
+        <!-- PROJECT 1: BIZARCH -->
+        <section class="project-section" id="bizarch">
+            <div class="project-info">
+                <span class="project-meta">Construction & Architecture</span>
+                <h2 class="project-title">BIZARCH</h2>
+                <div class="project-desc">
+                    <p>A comprehensive brand identity for a modern construction firm. The visual system emphasizes
+                        structural integrity, precision, and bold industrial aesthetics using a stark monochrome palette
+                        with safety-yellow accents.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>2024</h4>
+                        <p>Year</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Brand System</h4>
+                        <p>Scope</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-01.jpg" alt="Cover"></div>
+
+                <div class="page-item landscape"><img src="../branding/BIZARCH BRAND GUIDELINES-02.jpg" alt="Spread">
+                </div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-03.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-04.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-05.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/BIZARCH BRAND GUIDELINES-06.jpg"
+                        alt="Full Spread"></div>
+
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-07.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-08.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-09.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-10.jpg" alt="Mockup"></div>
+
+                <div class="page-item landscape"><img src="../branding/BIZARCH BRAND GUIDELINES-11.jpg" alt="Mockup">
+                </div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-12.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-13.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-14.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-15.jpg" alt="Mockup"></div>
+
+                <div class="page-item landscape"><img src="../branding/BIZARCH BRAND GUIDELINES-16.jpg" alt="App"></div>
+                <div class="page-item landscape"><img src="../branding/BIZARCH BRAND GUIDELINES-17.jpg" alt="Signage">
+                </div>
+                <div class="page-item"><img src="../branding/BIZARCH BRAND GUIDELINES-18.jpg" alt="Signage"></div>
+            </div>
+        </section>
+
+        <!-- PROJECT 2: OFSYS -->
+        <section class="project-section" id="ofsys">
+            <div class="project-info">
+                <span class="project-meta">Technology / SaaS</span>
+                <h2 class="project-title">OFSYS</h2>
+                <div class="project-desc">
+                    <p>Identity design for a next-gen office management system. The design language focuses on
+                        connectivity, flow, and digital efficiency, utilizing clean typography and data-visualization
+                        inspired motifs.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>2023</h4>
+                        <p>Year</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>UI/UX & Identity</h4>
+                        <p>Scope</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-01.jpg" alt="Ofsys Cover"></div>
+
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-02.jpg" alt="Concept">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-06.jpg" alt="Guideline">
+                </div>
+
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-03.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-04.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-05.jpg" alt="Detail"></div>
+
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-07.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-08.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-09.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-10.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-11.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/ofsys brand guidlines-12.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-13.jpg" alt="Website">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-14.jpg" alt="Website">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-15.jpg" alt="Dashboard">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-16.jpg" alt="Mobile">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-17.jpg" alt="Mobile">
+                </div>
+                <div class="page-item landscape"><img src="../branding/ofsys brand guidlines-18.jpg" alt="Mobile">
+                </div>
+            </div>
+        </section>
+
+        <!-- PROJECT 3: XCONCEPT -->
+        <section class="project-section" id="xconcept">
+            <div class="project-info">
+                <span class="project-meta">Automotive / Concept</span>
+                <h2 class="project-title">XCONCEPT</h2>
+                <div class="project-desc">
+                    <p>A futuristic brand identity for an innovative automotive concept. The design explores
+                        cutting-edge aesthetics with bold typography and dynamic visual elements that embody speed,
+                        innovation, and forward-thinking design.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>2024</h4>
+                        <p>Year</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Brand Identity</h4>
+                        <p>Scope</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-01.jpg" alt="Cover"></div>
+
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-02.jpg" alt="Spread">
+                </div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-03.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-04.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-05.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-06.jpg" alt="Spread">
+                </div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-07.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-08.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-09.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-10.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-11.jpg" alt="Mockup">
+                </div>
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-12.jpg" alt="Mockup">
+                </div>
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-13.jpg"
+                        alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-14.jpg"
+                        alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/XCONCEPT BRAND GUIDLINES-15.jpg" alt="Signage">
+                </div>
+                <div class="page-item"><img src="../branding/XCONCEPT BRAND GUIDLINES-16.jpg" alt="Detail"></div>
+            </div>
+        </section>
+
+        <!-- PROJECT 4: KAYAKALPA -->
+        <section class="project-section" id="kayakalpa">
+            <div class="project-info">
+                <span class="project-meta">Wellness / Ayurveda</span>
+                <h2 class="project-title">KAYAKALPA</h2>
+                <div class="project-desc">
+                    <p>A holistic brand identity for an Ayurvedic wellness center. The visual language blends
+                        traditional healing wisdom with contemporary design, using organic forms, earthy tones, and
+                        serene aesthetics to convey rejuvenation and balance.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>2024</h4>
+                        <p>Year</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Full Brand System</h4>
+                        <p>Scope</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-01.jpg" alt="Cover"></div>
+
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-02.jpg" alt="Spread">
+                </div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-03.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-04.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-05.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-06.jpg" alt="Spread">
+                </div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-07.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-08.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-09.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-10.jpg" alt="Mockup">
+                </div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-11.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-12.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-13.jpg"
+                        alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-14.jpg"
+                        alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-15.jpg" alt="Signage">
+                </div>
+                <div class="page-item landscape"><img src="../branding/kayakalpa brandguidlines-16.jpg" alt="Signage">
+                </div>
+                <div class="page-item"><img src="../branding/kayakalpa brandguidlines-17.jpg" alt="Detail"></div>
+            </div>
+        </section>
+
+        <!-- PROJECT 5: BRAND PROJECT -->
+        <section class="project-section" id="brand-project">
+            <div class="project-info">
+                <span class="project-meta">Corporate / Business</span>
+                <h2 class="project-title">BRAND PROJECT</h2>
+                <div class="project-desc">
+                    <p>A comprehensive corporate brand identity system. This project showcases strategic brand
+                        development with emphasis on professional aesthetics, versatile applications, and cohesive
+                        visual storytelling across multiple touchpoints.</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <h4>2023</h4>
+                        <p>Year</p>
+                    </div>
+                    <div class="stat-item">
+                        <h4>Brand System</h4>
+                        <p>Scope</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-gallery">
+                <div class="page-item"><img src="../branding/brand guidlines-01.jpg" alt="Cover"></div>
+
+                <div class="page-item landscape"><img src="../branding/brand guidlines-02.jpg" alt="Spread"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-03.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-04.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-05.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/brand guidlines-06.jpg" alt="Spread"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-07.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-08.jpg" alt="Detail"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-09.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/brand guidlines-10.jpg" alt="Mockup"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-11.jpg" alt="Detail"></div>
+
+                <div class="page-item landscape"><img src="../branding/brand guidlines-12.jpg" alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/brand guidlines-13.jpg" alt="Application"></div>
+                <div class="page-item landscape"><img src="../branding/brand guidlines-14.jpg" alt="Signage"></div>
+                <div class="page-item landscape"><img src="../branding/brand guidlines-15.jpg" alt="Signage"></div>
+                <div class="page-item"><img src="../branding/brand guidlines-16.jpg" alt="Detail"></div>
+            </div>
+        </section>
+
+        <footer>
+            <span>Mohammed Faris &copy; 2025</span>
+        </footer>
+    </div>
+
+    <script>
+        feather.replace();
+
+        // Lenis
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Image Reveal Animation
+        const projectImages = document.querySelectorAll('.page-item');
+
+        projectImages.forEach(item => {
+            gsap.to(item.querySelector('img'), {
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 85%",
+                    onEnter: () => item.classList.add('revealed'),
+                }
+            });
+
+            // Keep 3D Tilt Effect
+            item.addEventListener('mousemove', (e) => {
+                const rect = item.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const xPct = x / rect.width;
+                const yPct = y / rect.height;
+                const xTilt = (0.5 - yPct) * 10;
+                const yTilt = (xPct - 0.5) * 10;
+
+                gsap.to(item, {
+                    transform: `perspective(1000px) rotateX(${xTilt}deg) rotateY(${yTilt}deg) scale(1.02)`,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+            });
+
+            item.addEventListener('mouseleave', () => {
+                gsap.to(item, {
+                    transform: `perspective(1000px) rotateX(0) rotateY(0) scale(1)`,
+                    duration: 0.5,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // Sticky Header Fade
+        gsap.utils.toArray('.project-info').forEach(info => {
+            gsap.from(info.children, {
+                opacity: 0,
+                y: 30,
+                duration: 1,
+                stagger: 0.1,
+                scrollTrigger: {
+                    trigger: info,
+                    start: "top 70%"
+                }
+            });
+        });
+
+    </script>
+    <script src="../js/background.js"></script>
+</body>
+
+</html>

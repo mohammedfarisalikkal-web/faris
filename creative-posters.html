@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Posters | Mohammed Faris</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #ff3c3c;
+            --bg-dark: #070708;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Cinematic Background Video */
+        .video-bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .video-bg-container video {
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: cover;
+            opacity: 0.35;
+            filter: grayscale(40%) brightness(0.4);
+        }
+
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(7, 7, 8, 0.4) 0%, var(--bg-dark) 100%);
+        }
+
+        .gallery-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-nav {
+            margin-bottom: 50px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 28px;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            backdrop-filter: blur(15px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 60, 60, 0.1);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 100px;
+        }
+
+        h1 {
+            font-size: clamp(3.5rem, 10vw, 7rem);
+            font-weight: 800;
+            margin: 0;
+            letter-spacing: -3px;
+            line-height: 0.9;
+            background: linear-gradient(180deg, #fff 0%, rgba(255, 255, 255, 0.4) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2rem;
+            margin-top: 20px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Masonry Grid Layout */
+        .posters-masonry {
+            columns: 4 300px;
+            column-gap: 30px;
+            width: 100%;
+        }
+
+        .poster-card {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 30px;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .poster-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .poster-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            border-color: rgba(255, 60, 60, 0.3);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 60, 60, 0.1);
+        }
+
+        .poster-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Ambient info reveal */
+        .poster-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 30px;
+            pointer-events: none;
+        }
+
+        .poster-card:hover .poster-overlay {
+            opacity: 1;
+        }
+
+        .poster-tag {
+            color: var(--accent);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            transform: translateY(10px);
+            transition: transform 0.4s ease 0.1s;
+        }
+
+        .poster-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            transform: translateY(10px);
+            transition: transform 0.4s ease 0.2s;
+        }
+
+        .poster-card:hover .poster-tag,
+        .poster-card:hover .poster-title {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 1200px) {
+            .posters-masonry {
+                columns: 3;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .posters-masonry {
+                columns: 2;
+            }
+
+            .header-section {
+                margin-bottom: 60px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .posters-masonry {
+                columns: 1;
+            }
+
+            h1 {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="video-bg-container">
+        <video autoplay muted loop playsinline poster="../img/bg-fallback.jpg">
+            <source
+                src="https://assets.mixkit.co/videos/preview/mixkit-abstract-swirl-of-dark-ink-in-water-41223-large.mp4"
+                type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <div class="gallery-container">
+        <nav class="back-nav" data-aos="fade-down">
+            <a href="../index.html" class="back-btn">
+                <span>←</span> BACK TO HOME
+            </a>
+        </nav>
+
+        <header class="header-section" data-aos="fade-up">
+            <h1>The Poster Collection</h1>
+            <p>Every poster tells a story. Here’s a collection of my favorite visual journeys.</p>
+        </header>
+
+        <div class="posters-masonry">
+            <!-- All 69 posters in masonry layout -->
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/20 mtr poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">From the Studio</span><span class="poster-title">A
+                        Closer Look</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/360° Surround Cooling.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/AI That Knows When You’re Hot (OMAN).jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Artboard 1.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Artboard 3.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Artboard 4.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Artboard 5.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/BIZARCH DEPAVALI POSTER.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/BLUBI BEAUTY PARLOR EID POSTER.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Comfort without noice.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/Cool smarter(arabic)oman.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/DORO EID MUBARAK.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/Feel the Difference – AI Cooling That Welcomes You Home OMAN ENGLISH.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/MUBIS KITCHEN.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/Outside Changes inside comfort remains.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/POSTER 1.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/POSTER 12_hash.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/POSTER 3.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/POSTER 5.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/POSTER 9.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/SUMMER END OFFER(number X).jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/TESSA EID POSTER.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/X-Mas SP poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/ad poster 3.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/ad poster 4.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/ad poster 5.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/ad poster main 2.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/ad poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/alvan traders eid poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/banana day poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/blith eid poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/bluby remake makeover eid.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/cool home cool life.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/depavali poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/dezert eid poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/easter poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/happy deepawali.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/iham eid poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/kerala piravi.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/mallof abaya eid.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/mayahi eid poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/national banana day.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poshlonge wid poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 1.png" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 10.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 11.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 12.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 13.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 14.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 15.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 2.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 4.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 6.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 7.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster 8.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/poster6.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/postive thinking spcial day poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/pottopomme eid.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/save energy bsave cool.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/shanthi homoeo eid poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/shifting spoat deepavali poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/sitharas makeover eid.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/smart cooling, simple choice (NO).jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/social media poster 2.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/social media poster.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/soothee spursh eid.jpg"
+                    alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/tulen eid poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img src="../creative poster/woodlamp poster.jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+            <div class="poster-card" data-aos="fade-up"><img
+                    src="../creative poster/%E2%80%9CDefeats heat. Defines comfort.%E2%80%9D (oman).jpg" alt="Poster">
+                <div class="poster-overlay"><span class="poster-tag">Creative Design</span><span
+                        class="poster-title">Elite Vision</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    </script>
+</body>
+
+</html>

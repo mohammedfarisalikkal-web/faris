@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Detector Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, sans-serif;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f4f7f6;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 24px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        #results {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .score-pill {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 900;
+            background: #eee;
+        }
+
+        .high {
+            background: #fde8e8;
+            color: #c81e1e;
+        }
+
+        .med {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .low {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        pre {
+            background: #2d3436;
+            color: #dfe6e9;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .source-box {
+            border-left: 4px solid #3498db;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <h1>Plagiarism Detector</h1>
+        <p>This demo compares your input against known sources using N-Gram Overlap and Cosine Similarity.</p>
+
+        <div class="source-box">
+            <strong>Active Sources for Comparison:</strong><br>
+            "The quick brown fox jumps over the lazy dog in the forest."<br>
+            "Plagiarism involves taking some other person's work or idea and passing it off as yours."
+        </div>
+
+        <textarea id="input"
+            placeholder="Paste your text here (e.g., 'The quick brown fox jumps over the lazy dog...')">The quick brown fox jumps over the lazy dog. Plagiarism is the act of taking someone else's work or ideas and passing them off as one's own.</textarea>
+        <button onclick="runCheck()">Analyze Similarity</button>
+
+        <div id="results">
+            <h2>Analysis Result</h2>
+            <div id="scoreLabel" class="score-pill">0% Similarity</div>
+            <p id="note" style="margin: 15px 0; font-weight: 500;"></p>
+            <h3>Breakdown</h3>
+            <pre id="jsonOutput"></pre>
+        </div>
+    </div>
+
+    <!-- System Scripts (Inlined for standalone browser use) -->
+    <script>
+        // Normalizer Logic
+        const Normalizer = {
+            normalize: (text) => {
+                if (!text || typeof text !== 'string') return '';
+                return text.toLowerCase().replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim();
+            },
+            tokenize: (text) => {
+                const normalized = Normalizer.normalize(text);
+                return normalized ? normalized.split(' ') : [];
+            }
+        };
+
+        // N-Gram Strategy
+        class NGramStrategy {
+            constructor(n = 3) { this.n = n; this.name = 'N-Gram Overlap'; }
+            calculate(text1, text2) {
+                const grams1 = this.generateGrams(text1);
+                const grams2 = this.generateGrams(text2);
+                if (grams1.size === 0 || grams2.size === 0) return { score: 0, matches: [] };
+                let intersection = 0;
+                const matches = [];
+                grams1.forEach(gram => { if (grams2.has(gram)) { intersection++; matches.push(gram); } });
+                const score = (2 * intersection) / (grams1.size + grams2.size);
+                return { score: parseFloat((score * 100).toFixed(2)), matches: Array.from(new Set(matches)) };
+            }
+            generateGrams(text) {
+                const tokens = Normalizer.tokenize(text);
+                const grams = new Set();
+                for (let i = 0; i <= tokens.length - this.n; i++) {
+                    const gram = tokens.slice(i, i + this.n).join(' ');
+                    if (gram) grams.add(gram);
+                }
+                return grams;
+            }
+        }
+
+        // Cosine Strategy
+        class CosineStrategy {
+            constructor() { this.name = 'Cosine Similarity'; }
+            calculate(text1, text2) {
+                const tokens1 = Normalizer.tokenize(text1);
+                const tokens2 = Normalizer.tokenize(text2);
+                if (tokens1.length === 0 || tokens2.length === 0) return { score: 0 };
+                const freqMap1 = this.getFrequencyMap(tokens1);
+                const freqMap2 = this.getFrequencyMap(tokens2);
+                const allTokens = new Set([...Object.keys(freqMap1), ...Object.keys(freqMap2)]);
+                let dotProduct = 0, mag1 = 0, mag2 = 0;
+                allTokens.forEach(token => {
+                    const v1 = freqMap1[token] || 0;
+                    const v2 = freqMap2[token] || 0;
+                    dotProduct += v1 * v2; mag1 += v1 * v1; mag2 += v2 * v2;
+                });
+                const similarity = dotProduct / (Math.sqrt(mag1) * Math.sqrt(mag2));
+                return { score: parseFloat((similarity * 100).toFixed(2)) };
+            }
+            getFrequencyMap(tokens) { return tokens.reduce((map, token) => { map[token] = (map[token] || 0) + 1; return map; }, {}); }
+        }
+
+        // Plagiarism Engine
+        class PlagiarismEngine {
+            constructor() { this.strategies = []; }
+            addStrategy(strategy) { this.strategies.push(strategy); }
+            async analyze(input, sources) {
+                if (!input || !sources || sources.length === 0) return this.emptyReport();
+                const reports = sources.map(source => this.analyzeOne(input, source));
+                return reports.reduce((prev, current) => (prev.overall_similarity_score > current.overall_similarity_score) ? prev : current);
+            }
+            analyzeOne(input, source) {
+                const breakdown = {};
+                let totalScore = 0;
+                this.strategies.forEach(strategy => {
+                    const result = strategy.calculate(input, source);
+                    breakdown[strategy.name.toLowerCase().replace(/\s+/g, '_')] = result;
+                    totalScore += result.score;
+                });
+                const overallScore = this.strategies.length > 0 ? (totalScore / this.strategies.length) : 0;
+                return {
+                    overall_similarity_score: parseFloat(overallScore.toFixed(2)),
+                    similarity_breakdown: breakdown,
+                    matched_segments: breakdown.n_gram_overlap ? breakdown.n_gram_overlap.matches : [],
+                    confidence_note: this.getConfidenceNote(overallScore)
+                };
+            }
+            getConfidenceNote(score) {
+                if (score > 60) return "High likelihood of plagiarism. Significant text overlap detected.";
+                if (score > 30) return "Moderate similarity. Content shares phrases with source materials.";
+                return "Low similarity. Content appears mostly original.";
+            }
+        }
+
+        // UI Hook
+        const engine = new PlagiarismEngine();
+        engine.addStrategy(new NGramStrategy(3));
+        engine.addStrategy(new CosineStrategy());
+
+        const COMPARISON_SOURCES = [
+            "The quick brown fox jumps over the lazy dog in the forest.",
+            "Plagiarism involves taking some other person's work or idea and passing it off as yours."
+        ];
+
+        async function runCheck() {
+            const input = document.getElementById('input').value;
+            const report = await engine.analyze(input, COMPARISON_SOURCES);
+
+            const resultsDiv = document.getElementById('results');
+            const scoreLabel = document.getElementById('scoreLabel');
+            const jsonOutput = document.getElementById('jsonOutput');
+            const note = document.getElementById('note');
+
+            resultsDiv.style.display = 'block';
+            scoreLabel.innerText = `${report.overall_similarity_score}% Similarity`;
+
+            scoreLabel.className = 'score-pill';
+            if (report.overall_similarity_score > 60) scoreLabel.classList.add('high');
+            else if (report.overall_similarity_score > 30) scoreLabel.classList.add('med');
+            else scoreLabel.classList.add('low');
+
+            note.innerText = report.confidence_note;
+            jsonOutput.innerText = JSON.stringify(report, null, 2);
+        }
+    </script>
+</body>
+
+</html>
